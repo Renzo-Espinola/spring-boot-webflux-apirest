@@ -50,7 +50,7 @@ public class ProductoController {
 				+ file.filename().replace(" ", "").replace(":", "").replace("\\", ""));
 		return file.transferTo(new File((path + producto.getFoto()))).then(service.save(producto))
 				.map(p -> ResponseEntity.created(URI.create("/api/productos/".concat(p.getId())))
-						.contentType(MediaType.APPLICATION_JSON).body(p));
+						.contentType(MediaType.APPLICATION_JSON_UTF8).body(p));
 
 	}
 
@@ -65,12 +65,12 @@ public class ProductoController {
 
 	@GetMapping
 	public Mono<ResponseEntity<Flux<Producto>>> listar2() {
-		return Mono.just(ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(service.findAll()));
+		return Mono.just(ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(service.findAll()));
 	}
 
 	@GetMapping("/{id}")
 	public Mono<ResponseEntity<Producto>> ver(@PathVariable String id) {
-		return service.findById(id).map(p -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(p))
+		return service.findById(id).map(p -> ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(p))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
@@ -87,7 +87,7 @@ public class ProductoController {
 				respuesta.put("mensaje", "Producto creado con exito");
 				respuesta.put("fecha", new Date());
 				return ResponseEntity.created(URI.create("/api/productos/".concat(p.getId())))
-						.contentType(MediaType.APPLICATION_JSON).body(respuesta);
+						.contentType(MediaType.APPLICATION_JSON_UTF8).body(respuesta);
 			});
 		}).onErrorResume(t -> {
 			return Mono.just(t).cast(WebExchangeBindException.class)
@@ -111,7 +111,7 @@ public class ProductoController {
 			prod.setPrecio(producto.getPrecio());
 			return service.save(prod);
 		}).map(p -> ResponseEntity.created(URI.create("/api/productos/".concat(p.getId())))
-				.contentType(MediaType.APPLICATION_PROBLEM_JSON).body(p))
+				.contentType(MediaType.APPLICATION_JSON_UTF8).body(p))
 				.defaultIfEmpty(ResponseEntity.notFound().build());
 	}
 
